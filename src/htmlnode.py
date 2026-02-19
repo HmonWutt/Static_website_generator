@@ -17,8 +17,11 @@ class HTMLNode:
         return result 
 
     def __repr__(self):
-        children = ""
-        if self.children:
-            [children+repr(i) for i in self.children]
-        return f"HTMLNode({self.tag}, {self.value}, {children}, {self.props_to_html()})"
+        children_list = ""
+        if not self.children:
+            children_list+="None"
+        else:
+            for each in self.children:
+                children_list+=repr(each)
+        return f"HTMLNode({self.tag}, {self.value}, {children_list}, {self.props_to_html()})"
     
