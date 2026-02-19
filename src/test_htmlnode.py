@@ -15,4 +15,4 @@ class TestHtmlNode(unittest.TestCase):
         self.assertEqual(f'HTMLNode(a,this is a link to google.com,, href="https://google.com" target="_blank")', repr(self.htmlnode1))
 
     def test_repr_with_children(self):
-        self.assertEqual(f'HTMLNode(div,None,HTMLNode(a,this is a link to google.com,, href="https://google.com" target="_blank"),)', repr(self.htmlnode2))
+        self.assertEqual(f'HTMLNode(div,,HTMLNode(a,this is a link to google.com,, href="https://google.com" target="_blank"),)', repr(self.htmlnode2))
