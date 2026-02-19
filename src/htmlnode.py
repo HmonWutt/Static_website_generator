@@ -20,5 +20,5 @@ class HTMLNode:
         children = ""
         if self.children:
             [children+repr(i) for i in self.children]
-        return f"\n{self.tag}, value = {self.value}, \nchildren: {children}, \nprops: {self.props_to_html()}"
+        return f"HTMLNode({self.tag}, {self.value}, {children}, {self.props_to_html()})"
     
