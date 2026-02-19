@@ -16,3 +16,6 @@ class TestHtmlNode(unittest.TestCase):
 
     def test_repr_with_children(self):
         self.assertEqual(f'HTMLNode(div,,HTMLNode(a,this is a link to google.com,, href="https://google.com" target="_blank"),)', repr(self.htmlnode2))
+
+if __name__ == "__main__":
+    unittest.main()
