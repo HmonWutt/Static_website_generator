@@ -40,11 +40,15 @@ def extract_markdown_links(text):
 def split_nodes_image(old_nodes):
     new_nodes = []
     for each in old_nodes:
-        if each.text:
+        if each.text_type == TextType.TEXT:
             new_nodes.extend(helper_split_nodes(each.text,extract_markdown_images,"![",TextType.IMAGE))
+        else:
+            new_nodes.append(each)
     return new_nodes
 
 def helper_split_nodes(text,callback, start,type):
+    if not text:
+        return []
     copy = text 
     new_nodes = []
     images = callback(text)
@@ -64,6 +68,19 @@ def helper_split_nodes(text,callback, start,type):
 def split_nodes_link(old_nodes):
     new_nodes=[]
     for each in old_nodes:
-        new_nodes.extend(helper_split_nodes(each.text,extract_markdown_links,"[",TextType.LINK))
+        if each.text_type == TextType.TEXT:
+            new_nodes.extend(helper_split_nodes(each.text,extract_markdown_links,"[",TextType.LINK))
+        else:
+            new_nodes.append(each)
     return new_nodes
+
+def text_to_textnodes(text):
+    old_nodes = [TextNode(text,TextType.TEXT)]
+    old_nodes = split_nodes_delimiter(old_nodes,"**",TextType.BOLD)
+    old_nodes = split_nodes_delimiter(old_nodes,"_",TextType.ITALIC)
+    old_nodes = split_nodes_delimiter(old_nodes,"`",TextType.CODE)
+    old_nodes = split_nodes_image(old_nodes)
+    old_nodes = split_nodes_link(old_nodes)
+    return old_nodes
+
 
