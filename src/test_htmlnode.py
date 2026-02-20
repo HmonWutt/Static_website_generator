@@ -107,6 +107,12 @@ class TestHtmlNode(unittest.TestCase):
             new_nodes,
         )
 
+    def test_formatted_wrong(self):
+        node = TextNode("This is **formatted wrong",TextType.TEXT)
+        with self.assertRaises(Exception):
+            new_nodes = split_nodes_delimiter([node],"**",TextType.BOLD)
+
+        
 
 if __name__ == "__main__":
     unittest.main()

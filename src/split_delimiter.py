@@ -14,6 +14,8 @@ def helper(node,delimiter,type):
         return []
     new_nodes = []
     split_texts = node.text.split(delimiter)
+    if len(split_texts)%2==0:
+        raise Exception("Missing closing delimiter, formatted wrong")
     for ind, each in enumerate(split_texts):
         if each:
             if ind%2 ==0:
