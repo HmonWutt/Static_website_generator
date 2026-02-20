@@ -29,9 +29,9 @@ def text_node_to_html_node(text_node):
 
 class TextNode:
     def __init__(self, text, text_type, url=None) -> None:
-        self.text = text
-        self.text_type = text_type
-        self.url = url
+        self.text = text or ""
+        self.text_type = text_type or ""
+        self.url = url or ""
 
     def __eq__(self, object):
         return (
@@ -41,4 +41,7 @@ class TextNode:
         )
 
     def __repr__(self):
-        return f"TextNode({self.text}, {self.text_type.value}, {self.url})"
+        repr = f"TextNode({self.text}, {self.text_type}"
+        if self.url:
+            repr+=f", {self.url}"
+        return repr+")"
