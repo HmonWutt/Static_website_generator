@@ -1,12 +1,16 @@
 import re
 from enum import Enum
+from split_delimiter import text_to_textnodes
+from textnode import text_node_to_html_node
+from parentnode import ParentNode
+from leafnode import LeafNode
 class BlockType(Enum):
-    PARAGRAPH=r"^(?![#+ |> ?|```|\-|\d.])"
-    HEADING = r"^#+ "
-    QUOTE = r"^> ?"
-    CODE = r"^```"
-    UNORDERED_LIST = r"^\- "
-    ORDERED_LIST = r"^\d. "
+    PARAGRAPH=r"^(?![#+ |> ?|```|\-|\d.])([\s\S]*)"
+    HEADING = r"^#+ ([\s\S]*)"
+    QUOTE = r"^> ?([\s\S]*)"
+    CODE = r"^```\n([\s\S]*)```$"
+    UNORDERED_LIST = r"^\- ([\s\S]*)"
+    ORDERED_LIST = r"^\d. ([\s\S]*)"
 
 def markdown_to_blocks(markdown):
     blocks = markdown.split("\n\n")
@@ -23,5 +27,41 @@ def block_to_block_type(block):
             return type.name
 
 
+
+def markdown_to_html_node(markdown):
+    blocks = markdown_to_blocks(markdown) 
+    children = []
+    html = []
+    for block in blocks:
+        tag,text = block_to_tag_and_text(block)
+        if tag == "pre":
+            children = [LeafNode("code", text)]
+        else:
+            replace_newline = re.sub("\n"," ",text)
+            children_textnodes = text_to_textnodes(replace_newline)
+            for each in children_textnodes:
+                children.append(text_node_to_html_node(each))
+        node = ParentNode(tag,children)
+        html.append(node)
+        children=[]
+     
+    return ParentNode("div",html)
+
+        
+def block_to_tag_and_text(block):
+    type = block_to_block_type(block)
+    match type:
+        case "PARAGRAPH":
+            return "p", re.findall(BlockType.PARAGRAPH.value,block)[0]
+        case "HEADING":
+            return "h3",re.findall(BlockType.HEADING.value,block)[0]
+        case "QUOTE":
+            return "p",re.findall(BlockType.QUOTE.value,block)[0]
+        case "CODE":
+            return "pre",re.findall(BlockType.CODE.value,block)[0]
+        case "UNORDERED_LIST":
+            return "ul",re.findall(BlockType.UNORDERED_LIST.value,block)[0]
+        case "ORDERED_LIST":
+            return "ol",re.findall(BlockType.ORDERED_LIST.value,block)[0]
 
 
