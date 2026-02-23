@@ -83,4 +83,15 @@ def text_to_textnodes(text):
     old_nodes = split_nodes_link(old_nodes)
     return old_nodes
 
+def markdown_to_blocks(markdown):
+    blocks = markdown.split("\n\n")
+    new_blocks  = []
+    length = len(blocks)
+    for i in range(length):
+        if blocks[i]:
+            new_blocks.append(blocks[i].strip("\n"))
+    return new_blocks
+
+
+
 
