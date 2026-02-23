@@ -1,7 +1,8 @@
 import unittest
 from htmlnode import HTMLNode
 from textnode import TextNode, TextType
-from split_delimiter import split_nodes_delimiter,extract_markdown_images, extract_markdown_links,split_nodes_image, split_nodes_link,text_to_textnodes, markdown_to_blocks
+from split_delimiter import split_nodes_delimiter,extract_markdown_images, extract_markdown_links,split_nodes_image,split_nodes_link, text_to_textnodes
+from text_to_blocks import markdown_to_blocks,BlockType, block_to_block_type
 
 class TestHtmlNode(unittest.TestCase):
     def setUp(self):
@@ -249,5 +250,40 @@ This is the same paragraph on a new line
             ],
         )
 
+    def test_block_to_block_type_heading1(self):
+        self.assertEqual(block_to_block_type("# Heading 1"), BlockType.HEADING.name)
+
+    def test_block_to_block_type_heading2(self):
+        self.assertEqual(block_to_block_type("## Heading 2"),BlockType.HEADING.name)
+        
+    def test_block_to_block_type_heading3(self):
+        self.assertEqual(block_to_block_type("### Heading 3"),BlockType.HEADING.name)
+
+    def test_block_to_block_type_unordered_list(self):
+        self.assertEqual(block_to_block_type("- read the problem \n- understand the problem"),BlockType.UNORDERED_LIST.name)
+
+    def test_block_to_block_type_ordered_list(self):
+        self.assertEqual(block_to_block_type("1. Hello\n2. Goodbye"), BlockType.ORDERED_LIST.name)
+
+    def test_block_to_block_type_code(self):
+        self.assertEqual(block_to_block_type("```print('Hello world') ```"),BlockType.CODE.name)
+
+    def test_block_to_block_type_paragraph(self):
+        self.assertEqual(block_to_block_type("Regular paragraph"), BlockType.PARAGRAPH.name)
+
+    
+    def test_block_to_block_types(self):
+        block = "# heading"
+        self.assertEqual(block_to_block_type(block), BlockType.HEADING.name)
+        block = "```\ncode\n```"
+        self.assertEqual(block_to_block_type(block), BlockType.CODE.name)
+        block = "> quote\n> more quote"
+        self.assertEqual(block_to_block_type(block), BlockType.QUOTE.name)
+        block = "- list\n- items"
+        self.assertEqual(block_to_block_type(block), BlockType.UNORDERED_LIST.name)
+        block = "1. list\n2. items"
+        self.assertEqual(block_to_block_type(block), BlockType.ORDERED_LIST.name)
+        block = "paragraph"
+        self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH.name)
 if __name__ == "__main__":
     unittest.main()
