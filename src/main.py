@@ -1,10 +1,12 @@
 from textnode import TextNode, TextType
 import os
 import shutil
+from pathlib import Path
 def main():
     text_node = TextNode("hello world", TextType.BOLD, "www.dummy.com")
-    os.chdir('/home/hmon/bootdev/github.com/HmonWutt/static_site_generator')
+    os.chdir('/home/hmon/bootdev/github.com/HmonWutt/static_site_generator/')
     filepaths = copy_files('static')
+    empty_dir('public')
     paste_files(filepaths,'public')
     #print(text_node)
 
@@ -34,5 +36,13 @@ def paste_files(filepaths, destination_dir):
         os.makedirs(dir,exist_ok=True)
         shutil.copy(filepath,dest_path)
         print("dest: ",dest_path)
+
+def empty_dir(dir):
+    dir = Path(dir)
+    for item in dir.iterdir():
+        if item.is_file():
+            item.unlink()
+        elif item.is_dir():
+            shutil.rmtree(item)
 main()
 print("see you later")
