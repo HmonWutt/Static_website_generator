@@ -64,4 +64,12 @@ def block_to_tag_and_text(block):
         case "ORDERED_LIST":
             return "ol",re.findall(BlockType.ORDERED_LIST.value,block)[0]
 
-
+def extract_title(markdown):
+    pattern =  r"^# (.*)"
+    lines = markdown.split("\n\n")
+    for line in lines:
+        stripped = line.strip("\n")
+        if stripped:
+            if re.search(pattern,stripped):
+                return re.search(pattern,stripped).group(1)
+            raise Exception("No title found")

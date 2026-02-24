@@ -2,7 +2,7 @@ import unittest
 from htmlnode import HTMLNode
 from textnode import TextNode, TextType
 from split_delimiter import split_nodes_delimiter,extract_markdown_images, extract_markdown_links,split_nodes_image,split_nodes_link, text_to_textnodes
-from text_to_blocks import markdown_to_blocks,BlockType, block_to_block_type,markdown_to_html_node
+from text_to_blocks import markdown_to_blocks,BlockType, block_to_block_type,markdown_to_html_node, extract_title
 
 class TestHtmlNode(unittest.TestCase):
     def setUp(self):
@@ -317,5 +317,17 @@ the **same** even with inline stuff
         html,
         "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
     )
+
+    def test_extract_title(self):
+        md = """
+# The knight of nine kingdoms
+        """
+        self.assertEqual(extract_title(md),"The knight of nine kingdoms")
+
+    def test_no_title(self):
+        md = "Hello there"
+        with self.assertRaises(Exception):
+            extract_title(md)
+
 if __name__ == "__main__":
     unittest.main()
