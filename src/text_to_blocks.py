@@ -29,8 +29,6 @@ def block_to_block_type(block):
         if re.search(type.value,block):
             return type.name
 
-
-
 def markdown_to_html_node(markdown):
     blocks = markdown_to_blocks(markdown) 
     children = []
@@ -63,9 +61,32 @@ def block_to_tag_and_text(block):
         case "CODE":
             return "pre",type,re.findall(BlockType.CODE.value,block)[0]
         case "UNORDERED_LIST":
+            text = re.findall(BlockType.UNORDERED_LIST.value,block)[0]
+            pattern = r'\n\-\s?'
+            li_s = md_list_to_html(text,pattern) 
+            ul = f"<ul>{li_s}</ul>"
+            print(ul)
             return "ul",type,re.findall(BlockType.UNORDERED_LIST.value,block)[0]
         case "ORDERED_LIST":
+            delimiter = '\n[0-9]. '
+            text = re.findall(BlockType.ORDERED_LIST.value,block)[0]
+            pattern = r'\n[0-9]+\.\s?'
+            li_s = md_list_to_html(text,delimiter)
+            ol = f"<ol>{li_s}</ol>"
+            print(ol) 
             return "ol",type,re.findall(BlockType.ORDERED_LIST.value,block)[0]
+
+def md_list_to_html(text,pattern):
+    items = re.split(pattern,text)
+    list_items_as_html = ""
+    for item in items:
+        text_nodes = text_to_textnodes(item)
+        html_nodes = []
+        for text_node in text_nodes:
+            html_nodes.append(text_node_to_html_node(text_node))
+            list_item = ParentNode("li",html_nodes, None).to_html()
+            list_items_as_html+=list_item
+    return list_items_as_html
 
 def extract_title(markdown):
     pattern =  r"^# (.*)"
@@ -118,14 +139,16 @@ def generate_page(from_path, template_path, dest_path):
     template_content = ""
     with open(from_path, 'r') as markdown:
         markdown_content = markdown.read()
-    
-    with open(template_path,'r')as template:
-        template_content = template.read()
-    title = extract_title(markdown_content)
+        #print(markdown_to_blocks(markdown_content)) 
+        #print(markdown_to_html_node())
+
+   # with open(template_path,'r')as template:
+   #     template_content = template.read()
+   # title = extract_title(markdown_content)
     markdown_to_html = markdown_to_html_node(markdown_content).to_html()
-    content = template_content.format(title=title, content=markdown_to_html )
-    with open(dest_path,'x') as output:
-        output.write(content)
+   # content = template_content.format(title=title, content=markdown_to_html )
+   # with open(dest_path,'x') as output:
+   #     output.write(content)
 
 
 
