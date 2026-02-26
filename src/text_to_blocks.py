@@ -57,26 +57,27 @@ def block_to_tag_and_text(block):
         case "HEADING":
             return "h3",type,re.findall(BlockType.HEADING.value,block)[0]
         case "QUOTE":
-            return "span",type,re.findall(BlockType.QUOTE.value,block)[0]
+            text = re.findall(BlockType.QUOTE.value,block)[0]
+            quote = md_quote_to_html(text) 
+            print("quote-------------------------------------------")
+            print(quote)
+            return "h3",type,re.findall(BlockType.QUOTE.value,block)[0]
         case "CODE":
             return "pre",type,re.findall(BlockType.CODE.value,block)[0]
         case "UNORDERED_LIST":
             text = re.findall(BlockType.UNORDERED_LIST.value,block)[0]
             pattern = r'\n\-\s?'
-            li_s = md_list_to_html(text,pattern) 
-            ul = f"<ul>{li_s}</ul>"
-            print(ul)
+            ul = md_list_to_html(text,pattern,"li","ul") 
             return "ul",type,re.findall(BlockType.UNORDERED_LIST.value,block)[0]
         case "ORDERED_LIST":
-            delimiter = '\n[0-9]. '
+            pattern = '\n[0-9]. '
             text = re.findall(BlockType.ORDERED_LIST.value,block)[0]
             pattern = r'\n[0-9]+\.\s?'
-            li_s = md_list_to_html(text,delimiter)
-            ol = f"<ol>{li_s}</ol>"
+            ol = md_list_to_html(text,pattern,"li","ol")
             print(ol) 
             return "ol",type,re.findall(BlockType.ORDERED_LIST.value,block)[0]
 
-def md_list_to_html(text,pattern):
+def md_list_to_html(text,pattern,child_tag,parent_tag):
     items = re.split(pattern,text)
     list_items_as_html = ""
     for item in items:
@@ -84,9 +85,24 @@ def md_list_to_html(text,pattern):
         html_nodes = []
         for text_node in text_nodes:
             html_nodes.append(text_node_to_html_node(text_node))
-            list_item = ParentNode("li",html_nodes, None).to_html()
+            list_item = ParentNode(child_tag,html_nodes, None).to_html()
             list_items_as_html+=list_item
-    return list_items_as_html
+    return f"<{parent_tag}>{list_items_as_html}</{parent_tag}>"
+
+def md_quote_to_html(text):
+    lines = re.split(r"> ?",text)
+    lines_joined = ""
+    author = ""
+    for line in lines:
+        if line.startswith("--"):
+            author = line
+        else:
+            lines_joined+=line
+    quote_node = LeafNode("blockquote" ,lines_joined )
+    author_node = LeafNode("figcaption",author)
+    node = ParentNode("figure", [quote_node,author_node],{"class": "quote"})
+    return node.to_html()
+
 
 def extract_title(markdown):
     pattern =  r"^# (.*)"
