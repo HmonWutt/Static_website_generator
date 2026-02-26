@@ -53,6 +53,9 @@ def block_to_tag_and_text(block):
     type = block_to_block_type(block)
     match type:
         case "PARAGRAPH":
+            text =  re.findall(BlockType.PARAGRAPH.value,block)[0]
+            paragraph = md_paragraph_to_html(text)
+            print(paragraph)
             return "p", type, re.findall(BlockType.PARAGRAPH.value,block)[0]
         case "HEADING":
             return "h3",type,re.findall(BlockType.HEADING.value,block)[0]
@@ -76,6 +79,14 @@ def block_to_tag_and_text(block):
             ol = md_list_to_html(text,pattern,"li","ol")
             print(ol) 
             return "ol",type,re.findall(BlockType.ORDERED_LIST.value,block)[0]
+
+def md_paragraph_to_html(text):
+    text_nodes = text_to_textnodes(text)
+    html_nodes = []
+    for text_node in text_nodes:
+        html_nodes.append(text_node_to_html_node(text_node))
+    node = ParentNode("p",html_nodes,None).to_html()
+    return node
 
 def md_list_to_html(text,pattern,child_tag,parent_tag):
     items = re.split(pattern,text)
