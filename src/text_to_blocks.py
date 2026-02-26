@@ -9,7 +9,7 @@ from parentnode import ParentNode
 from leafnode import LeafNode
 class BlockType(Enum):
     PARAGRAPH=r"^(?![#+ |> ?|```|\-|\d.])([\s\S]*)"
-    HEADING = r"^#+ ([\s\S]*)"
+    HEADING = r"^(# ?[\s\S]*)"
     QUOTE = r"^> ?([\s\S]*)"
     CODE = r"^```\n([\s\S]*)```$"
     UNORDERED_LIST = r"^\- ([\s\S]*)"
@@ -31,23 +31,11 @@ def block_to_block_type(block):
 
 def markdown_to_html_node(markdown):
     blocks = markdown_to_blocks(markdown) 
-    children = []
-    html = []
+    html = ""
     for block in blocks:
-        tag,type,text = block_to_tag_and_text(block)
-        if tag != "p":
-            children = [LeafNode(tag, text)]
-        else:
-            replace_newline = re.sub("\n"," ",text)
-            children_textnodes = text_to_textnodes(replace_newline)
-            for each in children_textnodes:
-                children.append(text_node_to_html_node(each))
-        node = ParentNode(tag,children)
-        html.append(node)
-        children=[]
-     
-    return ParentNode("div",html)
-
+        html_node = block_to_tag_and_text(block)
+        html+=html_node
+    return html
         
 def block_to_tag_and_text(block):
     type = block_to_block_type(block)
@@ -55,33 +43,46 @@ def block_to_tag_and_text(block):
         case "PARAGRAPH":
             text =  re.findall(BlockType.PARAGRAPH.value,block)[0]
             paragraph = md_paragraph_to_html(text)
-            print(paragraph)
-            return "p", type, re.findall(BlockType.PARAGRAPH.value,block)[0]
+            return paragraph
         case "HEADING":
-            return "h3",type,re.findall(BlockType.HEADING.value,block)[0]
+            heading = re.findall(BlockType.HEADING.value,block)[0] 
+            node = None
+            heading_one_pattern = r"^#(?!#) ?([\s\S]*)"
+            pattern = r"^#+ ?([\s\S]*)"
+            if re.search(heading_one_pattern,heading):
+                node = md_heading_to_html("h1",heading,pattern)
+            else:
+                node = md_heading_to_html("h2", heading,pattern)
+            return node
         case "QUOTE":
             text = re.findall(BlockType.QUOTE.value,block)[0]
             quote = md_quote_to_html(text) 
-            print("quote-------------------------------------------")
-            print(quote)
-            return "h3",type,re.findall(BlockType.QUOTE.value,block)[0]
+            return quote
         case "CODE":
-            return "pre",type,re.findall(BlockType.CODE.value,block)[0]
+            text = re.findall(BlockType.CODE.value,block)[0]
+            code = LeafNode("code",text)
+            parent = ParentNode("pre",[code],None)
+            return parent.to_html()
         case "UNORDERED_LIST":
             text = re.findall(BlockType.UNORDERED_LIST.value,block)[0]
             pattern = r'\n\-\s?'
             ul = md_list_to_html(text,pattern,"li","ul") 
-            return "ul",type,re.findall(BlockType.UNORDERED_LIST.value,block)[0]
+            return ul
         case "ORDERED_LIST":
             pattern = '\n[0-9]. '
             text = re.findall(BlockType.ORDERED_LIST.value,block)[0]
             pattern = r'\n[0-9]+\.\s?'
             ol = md_list_to_html(text,pattern,"li","ol")
-            print(ol) 
-            return "ol",type,re.findall(BlockType.ORDERED_LIST.value,block)[0]
+            return ol
+
+def md_heading_to_html(tag, text,pattern):
+    trimmed_text = re.findall(pattern,text)[0]
+    node = LeafNode(tag,trimmed_text)
+    return node.to_html()
 
 def md_paragraph_to_html(text):
-    text_nodes = text_to_textnodes(text)
+    no_newline = re.sub('\n'," ",text)
+    text_nodes = text_to_textnodes(no_newline)
     html_nodes = []
     for text_node in text_nodes:
         html_nodes.append(text_node_to_html_node(text_node))
@@ -116,14 +117,13 @@ def md_quote_to_html(text):
 
 
 def extract_title(markdown):
-    pattern =  r"^# (.*)"
+    pattern =  r"^#(?!#) ?(.*)"
     lines = markdown.split("\n\n")
-    for line in lines:
-        stripped = line.strip("\n")
-        if stripped:
-            if re.search(pattern,stripped):
-                return re.search(pattern,stripped).group(1)
-            Exception("No title found")
+    stripped = lines[0].strip("\n")
+    if stripped:
+        if re.search(pattern,stripped):
+            return re.search(pattern,stripped).group(1)
+    raise Exception("No title found")
 
 def copy_files(src_dir):
     if not os.path.exists(src_dir):
@@ -145,7 +145,7 @@ def helper_copy_files(path,file_paths):
 
 def paste_files(filepaths, destination_dir):
     for filepath in filepaths:
-        src_path = os.path.join(*filepath.split(os.sep)[:])
+        src_path = os.path.join(*filepath.split(os.sep)[1:])
         dest_path = os.path.join(destination_dir,src_path)
         dir = os.path.dirname(dest_path)
         os.makedirs(dir,exist_ok=True)
@@ -166,16 +166,14 @@ def generate_page(from_path, template_path, dest_path):
     template_content = ""
     with open(from_path, 'r') as markdown:
         markdown_content = markdown.read()
-        #print(markdown_to_blocks(markdown_content)) 
-        #print(markdown_to_html_node())
 
-   # with open(template_path,'r')as template:
-   #     template_content = template.read()
-   # title = extract_title(markdown_content)
-    markdown_to_html = markdown_to_html_node(markdown_content).to_html()
-   # content = template_content.format(title=title, content=markdown_to_html )
-   # with open(dest_path,'x') as output:
-   #     output.write(content)
+    with open(template_path,'r')as template:
+        template_content = template.read()
+    title = extract_title(markdown_content)
+    markdown_to_html = markdown_to_html_node(markdown_content)
+    content = template_content.format(title=title, content=markdown_to_html )
+    with open(dest_path,'x') as output:
+        output.write(content)
 
 
 
