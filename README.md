@@ -1,6 +1,6 @@
 ## Static website generator
 
-This is python programme that parse markdown files and convert them into a single/multiple page static website. The webpage uses my favourite catppuccin palette. A Generated webpage looks something like this_ [link](https://hmonwutt.github.io/Static_website_generator/) that can be deployed to github pages.
+This is python programme that parse markdown files and convert them into a single/multiple page static website. The webpage uses my favourite catppuccin palette. A Generated webpage looks something like this [link](https://hmonwutt.github.io/Static_website_generator/) that can be deployed to github pages.
 
 Nested formatting like this `_**hello**_` does not work right now. You can use the formatting below.
 
