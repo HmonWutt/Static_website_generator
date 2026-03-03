@@ -8,7 +8,7 @@ from textnode import text_node_to_html_node
 from parentnode import ParentNode
 from leafnode import LeafNode
 class BlockType(Enum):
-    PARAGRAPH=r"^(?![#+ |> ?|```|\-|\d.])([\s\S]*)"
+    PARAGRAPH=r"^(?!(?:#+ |> ?|```|\-|\d.))([\s\S]*)"
     HEADING = r"^(# ?[\s\S]*)"
     QUOTE = r"^> ?([\s\S]*)"
     CODE = r"^```\n([\s\S]*)```$"
@@ -111,9 +111,14 @@ def md_quote_to_html(text):
         else:
             lines_joined+=line
     quote_node = LeafNode("blockquote" ,lines_joined )
-    author_node = LeafNode("figcaption",author)
-    node = ParentNode("figure", [quote_node,author_node],{"class": "quote"})
-    return node.to_html()
+    if author:
+        author_node = LeafNode("figcaption",author)
+        node = ParentNode("figure", [quote_node,author_node],{"class": "quote"})
+        return node.to_html()
+    else:
+        node = ParentNode("figure", [quote_node],{"class": "quote"})
+        return node.to_html()
+
 
 
 def extract_title(markdown):
@@ -125,7 +130,7 @@ def extract_title(markdown):
             return re.search(pattern,stripped).group(1)
     raise Exception("No title found")
 
-def copy_files(src_dir):
+def copy_file_paths(src_dir):
     if not os.path.exists(src_dir):
         raise Exception("source path not valid")
     if os.path.isfile(src_dir):
@@ -143,14 +148,30 @@ def helper_copy_files(path,file_paths):
         helper_copy_files(joined_path, file_paths)
     return file_paths
 
-def paste_files(filepaths, destination_dir):
-    for filepath in filepaths:
-        src_path = os.path.join(*filepath.split(os.sep)[1:])
-        dest_path = os.path.join(destination_dir,src_path)
-        dir = os.path.dirname(dest_path)
-        os.makedirs(dir,exist_ok=True)
-        shutil.copy(filepath,dest_path)
+def paste_files(src_filepaths, destination_dir):
+    for src_filepath in src_filepaths:
+        dest_path = create_dest_dir_path(src_filepath,destination_dir)
+        shutil.copy(src_filepath,dest_path)
         print("dest: ",dest_path)
+
+def create_dest_dir_path(source_filepath, dest_dir):
+    src_path = os.path.join(*source_filepath.split(os.sep)[1:])
+    dest_path = os.path.join(dest_dir,src_path)
+    dir = os.path.dirname(dest_path)
+    os.makedirs(dir,exist_ok=True)
+    return dest_path
+
+def create_dest_dir_path_dir_included(source_filepath, dest_dir):
+    src_path = os.path.join(*source_filepath.split(os.sep)[1:])
+    dest_path = os.path.join(dest_dir,src_path)
+    dir = os.path.dirname(dest_path)
+    path = os.path.join(dir, "index.html")
+    os.makedirs(dir,exist_ok=True)
+    return path
+
+def write_file(filepath, content):
+     with open(filepath,'x') as output:
+        output.write(content)
 
 def empty_dir(dir):
     dir = Path(dir)
@@ -160,20 +181,21 @@ def empty_dir(dir):
         elif item.is_dir():
             shutil.rmtree(item)
 
-def generate_page(from_path, template_path, dest_path):
-    print(f"Generating page from {from_path} to {dest_path} using {template_path}")
+def generate_pages_recursively(src_dir, template_path, dest_dir):
+    print(f"Generating pages from {src_dir} to {dest_dir} using {template_path}")
     markdown_content = ""
     template_content = ""
-    with open(from_path, 'r') as markdown:
-        markdown_content = markdown.read()
-
     with open(template_path,'r')as template:
         template_content = template.read()
-    title = extract_title(markdown_content)
-    markdown_to_html = markdown_to_html_node(markdown_content)
-    content = template_content.format(title=title, content=markdown_to_html )
-    with open(dest_path,'x') as output:
-        output.write(content)
-
+    content_filepaths = copy_file_paths(src_dir)
+    for content_filepath in content_filepaths:
+        with open(content_filepath, 'r') as markdown:
+            markdown_content = markdown.read()
+        title = extract_title(markdown_content)
+        markdown_to_html = markdown_to_html_node(markdown_content)
+        content = template_content.format(title=title, content=markdown_to_html )
+        dest_path = create_dest_dir_path_dir_included(content_filepath,dest_dir)
+        write_file(dest_path, content)
+        
 
 
