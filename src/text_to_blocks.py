@@ -48,11 +48,14 @@ def block_to_tag_and_text(block):
             heading = re.findall(BlockType.HEADING.value,block)[0] 
             node = None
             heading_one_pattern = r"^#(?!#) ?([\s\S]*)"
-            pattern = r"^#+ ?([\s\S]*)"
+            heading_two_pattern = r"^##(?!#) ?([\s\S]*)"
+            pattern = r"[^#*`_]*"
             if re.search(heading_one_pattern,heading):
                 node = md_heading_to_html("h1",heading,pattern)
+            elif re.search(heading_two_pattern,heading):
+                node = md_heading_to_html("h2",heading,pattern)
             else:
-                node = md_heading_to_html("h2", heading,pattern)
+                node = md_heading_to_html("h3", heading,pattern)
             return node
         case "QUOTE":
             text = re.findall(BlockType.QUOTE.value,block)[0]
@@ -76,7 +79,8 @@ def block_to_tag_and_text(block):
             return ol
 
 def md_heading_to_html(tag, text,pattern):
-    trimmed_text = re.findall(pattern,text)[0]
+    trimmed_text_parts = re.findall(pattern,text)
+    trimmed_text = "".join(trimmed_text_parts).strip()
     node = LeafNode(tag,trimmed_text)
     return node.to_html()
 
