@@ -4,17 +4,17 @@ import sys
 
 from text_to_blocks import extract_title, copy_file_paths, paste_files, empty_dir, generate_pages_recursively
 def main():
-    text_node = TextNode("hello world", TextType.BOLD, "www.dummy.com")
-
-    if len(sys.argv) != 2:
-        print("Usage: python script.py <url> <source_dir> <destination_dir>")
+    if len(sys.argv) != 5:
+        print("Usage: python3 src/main.py <your github page url> <static files source directory> <md source directory> <destination directory>")
         sys.exit(1)
     
     basepath = sys.argv[1]
-    print("Basepath:", basepath)
-    static_filepaths = copy_file_paths('static')
-    empty_dir('docs')
-    paste_files(static_filepaths,'docs')
-    generate_pages_recursively('content', 'template.html', 'docs',basepath)
+    static_src_dir = sys.argv[2]
+    md_src_dir = sys.argv[3]
+    dest_dir = sys.argv[4]
+    print("Github pages url:", basepath)
+    static_filepaths = copy_file_paths(static_src_dir)
+    empty_dir(dest_dir)
+    paste_files(static_filepaths,dest_dir)
+    generate_pages_recursively(md_src_dir, 'template.html', dest_dir,basepath)
 main()
-print("see you later")

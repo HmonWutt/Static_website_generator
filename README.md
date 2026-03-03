@@ -1,4 +1,4 @@
-# Static_website_generator
+## Static website generator
 
 _The generated webpage can be viewed here._
 
