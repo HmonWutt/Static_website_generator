@@ -1,14 +1,12 @@
 ## Static website generator
 
+This is python programme that parse markdown files and convert them into a single/multiple page static website. The webpage uses my favourite catppuccin palette. A Generated webpage looks something like this_ [link](https://hmonwutt.github.io/Static_website_generator/) that can be deployed to github pages.
 
-_The webpage uses my favourite catppuccin palette. A Generated webpage looks something like this._[link](https://hmonwutt.github.io/Static_website_generator/). Nested formatting like this `_**hello**_` does not work right now.
-
-The formatting you can use: 
+Nested formatting like this `_**hello**_` does not work right now. You can use the formatting below.
 
 _The following are **block-level formatting** meaning they require **a blank line before and after** so that the parser recognises it as a separate block._
 
 Headings
-
 ```
 # Page heading
 
@@ -16,17 +14,13 @@ Headings
 ```
 
 Ordered List
-
 ```
 1. First item
 2. Second item
 3. Third item
 ```
-```
 
 Unordered list
-
-```
 ```
 - First item
 - Second item
@@ -34,29 +28,24 @@ Unordered list
 ```
 
 Code snippets
-
+````
 ```
-print("hello world")
+print("Hello world")
 ```
+````
 
 Quote with no author
-
-```
 ```
 > quote (no author)
 ```
 
 Quote with author name
-
 ```
 > quote
 > author
 ```
 
-```
-``` 
 _The following in-line formatting can be used within a block and do not require blank lines. They work within a paragraph or a sentence._
-
 ```
 **bold**
 _italic_
@@ -64,16 +53,14 @@ _italic_
 ![alt-text](imagefile)
 ```
 
-_Create **content** directory by running this command in the terminal._
+_1. You can place image files in_ **static/image** 
 
+_2. Create **content** directory by running this command in the terminal._
 ```
 mdkir content
 ```
 
-_You can place image files in **static/image** _
-
-_Create markdown files in **content** directory. Feel free to create subfolders. The directory should look like this. You can name the subdirectories anything you like but markdown files must be named **index.md**_
-
+_3. Create markdown files in **content** directory. Feel free to create subfolders. The directory should look like this. You can name the subdirectories anything you like but markdown files must be named **index.md**_
 ```text
 content/
 ├── subdir/
@@ -82,31 +69,28 @@ content/
     └── index.md
 ```
 
-_Create **docs** directory. This is where generated html files will go._
-
+_4. Create **docs** directory. This is where generated html files will go._
 ```
 mkdir docs
 ```
 
-_Run this command from the root of the project to test the webpage locally. The webpage is available at:_ **http://localhost:8888**
-
+_5. Run this command from the root of the project to test the webpage locally. The webpage is available at:_ **http://localhost:8888**
 ```
 ./main.sh
 ```
 
-```
-```
-_Run this command from the root of the project to build the project._
-
+_6. Run this command from the root of the project to build the project._
 ```
 ./build.sh "https://<username>.github.io/<repo name>/" "static" "content" "docs"
 ```
 
-_Click **settings** on your repo._
+_7. Click **settings** on your repo._
 
-![Screenshot](images/setting.png). Create github pages by following this guide [Github pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site). 
+![Screenshot](images/setting.png). 
 
-Choose **main** branch and use the folder dropdown menu to select **docs** for your publishing source._
+_8. Create github pages by following this guide_[Github pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site). 
 
-_That's all for now. Hope you gave it a try. Thanks for stopping by_❤️
+_9. Choose **main** branch and use the folder dropdown menu to select **docs** for your publishing source._
+
+~~That's all for now. Hope you gave it a try. Thanks for stopping by ❤️
 
