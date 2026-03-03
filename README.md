@@ -4,6 +4,7 @@
 _The webpage uses my favourite catppuccin palette. A Generated webpage looks something like this._[link](https://hmonwutt.github.io/Static_website_generator/). Nested formatting like this `_**hello**_` does not work right now.
 
 The formatting you can use: 
+
 _The following are **block-level formatting** meaning they require **a blank line before and after** so that the parser recognises it as a separate block._
 
 ```
@@ -20,12 +21,13 @@ Unordered list
 - First item
 - Second item
 - Third item
+```
 
 ```
 #code snippets
 print("hello world")
-
 ```
+
 ```
 ```
 > quote (no author)
@@ -44,7 +46,6 @@ _italic_
 ```
 ```
 
-```
 _Create **content** directory by running this command in the terminal._
 
 ```
@@ -83,7 +84,11 @@ _Run this command from the root of the project to build the project._
 ./build.sh "https://<username>.github.io/<repo name>/" "static" "content" "docs"
 ```
 
-_Click **settings** on your repo. ![Screenshot](images/setting.png). Create github pages by following this guide [Github pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site). Choose **main** branch and use the folder dropdown menu to select **docs** for your publishing source._
+_Click **settings** on your repo._
+
+![Screenshot](images/setting.png). Create github pages by following this guide [Github pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site). 
+
+Choose **main** branch and use the folder dropdown menu to select **docs** for your publishing source._
 
 _That's all for now. Hope you gave it a try. Thanks for stopping by_❤️
 
