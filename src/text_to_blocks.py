@@ -185,7 +185,7 @@ def empty_dir(dir):
         elif item.is_dir():
             shutil.rmtree(item)
 
-def generate_pages_recursively(src_dir, template_path, dest_dir):
+def generate_pages_recursively(src_dir, template_path, dest_dir,basepath):
     print(f"Generating pages from {src_dir} to {dest_dir} using {template_path}")
     markdown_content = ""
     template_content = ""
@@ -197,7 +197,7 @@ def generate_pages_recursively(src_dir, template_path, dest_dir):
             markdown_content = markdown.read()
         title = extract_title(markdown_content)
         markdown_to_html = markdown_to_html_node(markdown_content)
-        content = template_content.format(title=title, content=markdown_to_html )
+        content = template_content.format(title=title, content=markdown_to_html ).replace('href="/',f'href="{basepath}').replace('src="/',f'src="{basepath}')
         dest_path = create_dest_dir_path_dir_included(content_filepath,dest_dir)
         write_file(dest_path, content)
         
