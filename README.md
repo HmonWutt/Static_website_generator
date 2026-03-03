@@ -7,34 +7,53 @@ The formatting you can use:
 
 _The following are **block-level formatting** meaning they require **a blank line before and after** so that the parser recognises it as a separate block._
 
+Headings
+
 ```
 # Page heading
 
 ## Sub heading
+```
 
-Ordered list
+Ordered List
+
+```
 1. First item
 2. Second item
 3. Third item
+```
+```
 
 Unordered list
+
+```
+```
 - First item
 - Second item
 - Third item
 ```
 
+Code snippets
+
 ```
-#code snippets
 print("hello world")
 ```
+
+Quote with no author
 
 ```
 ```
 > quote (no author)
+```
 
+Quote with author name
+
+```
 > quote
 > author
+```
 
+```
 ``` 
 _The following in-line formatting can be used within a block and do not require blank lines. They work within a paragraph or a sentence._
 
@@ -43,7 +62,6 @@ _The following in-line formatting can be used within a block and do not require 
 _italic_
 [link](url)
 ![alt-text](imagefile)
-```
 ```
 
 _Create **content** directory by running this command in the terminal._
