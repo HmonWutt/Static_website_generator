@@ -76,12 +76,12 @@ mkdir docs
 
 _5. Run this command from the root of the project to test the webpage locally. The webpage is available at:_ **http://localhost:8888**
 ```
-./main.sh
+./main.sh / static content docs
 ```
 
 _6. Run this command from the root of the project to build the project._
 ```
-./build.sh "https://<username>.github.io/<repo name>/" "static" "content" "docs"
+./build.sh "https://<username>.github.io/<repo name>/" static content docs
 ```
 
 _7. Click **settings** on your repo._
