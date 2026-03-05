@@ -101,8 +101,11 @@ def md_list_to_html(text,pattern,child_tag,parent_tag):
         html_nodes = []
         for text_node in text_nodes:
             html_nodes.append(text_node_to_html_node(text_node))
-            list_item = ParentNode(child_tag,html_nodes, None).to_html()
-            list_items_as_html+=list_item
+
+        list_item = ParentNode(child_tag,html_nodes, None).to_html()
+        html_nodes=[]
+        print(list_item)
+        list_items_as_html+=list_item
     return f"<{parent_tag}>{list_items_as_html}</{parent_tag}>"
 
 def md_quote_to_html(text):
