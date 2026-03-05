@@ -104,7 +104,6 @@ def md_list_to_html(text,pattern,child_tag,parent_tag):
 
         list_item = ParentNode(child_tag,html_nodes, None).to_html()
         html_nodes=[]
-        print(list_item)
         list_items_as_html+=list_item
     return f"<{parent_tag}>{list_items_as_html}</{parent_tag}>"
 
